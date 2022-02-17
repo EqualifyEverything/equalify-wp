@@ -71,7 +71,7 @@ function equalify_wp_view(){
             if(!empty($posts)):
                 echo '<table><tr><th>Title</th><th>WCAG Errors</th>';
                 foreach ($posts as $post):
-                    echo '<tr><td>'.$post->post_title.'</td><td><a target="_blank" href="">'.get_post_meta($post->ID, 'equalify_wcag_errors', true).'</a></td>';
+                    echo '<tr><td>'.$post->post_title.'</td><td>'.get_post_meta($post->ID, 'equalify_wcag_errors', true).'</td>';
                 endforeach;
                 echo '</table>';
             else:
