@@ -46,8 +46,9 @@ function equalify_wp_view(){
             'Equalify',
             'administrator',
             'equalify',
-            'equalify_admin_page_html',
+            'equalify_admin_page_html'
         );
+
     }
     add_action( 'admin_menu', 'add_equalify_admin_page');
 
@@ -65,16 +66,16 @@ function equalify_wp_view(){
 
             <?php 
             // Loop through posts
-            $posts = get_posts(['meta_key' => 'wcag_errors', 'post_type' => ['post','page']]);
+            $posts = get_posts(['meta_key' => 'equalify_wcag_errors', 'post_type' => ['post','page']]);
 
             if(!empty($posts)):
                 echo '<table><tr><th>Title</th><th>WCAG Errors</th>';
                 foreach ($posts as $post):
-                    echo '<tr><td>'.$post->post_title.'</td><td><a target="_blank" href="">'.get_post_meta($post->ID, 'wcag_errors', true).'</a></td>';
+                    echo '<tr><td>'.$post->post_title.'</td><td><a target="_blank" href="">'.get_post_meta($post->ID, 'equalify_wcag_errors', true).'</a></td>';
                 endforeach;
                 echo '</table>';
             else:
-                '<p>Either you have no posts, or the site hasn\'t been equalified.';
+                echo '<p>Either you have no posts, or the site hasn\'t been equalified.';
             endif;
             ?>
 
