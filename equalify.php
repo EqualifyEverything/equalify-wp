@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Equalify
- * Description: Display WCAG accessibility scores via Little Forrest's API.
+ * Description: Display WCAG 2 AA accessibility errors via Little Forrest's API.
  * Author: Blake Bertuccelli
  * Author URI: https://github.com/bbertucc
  * Version: 0.0.1
@@ -17,6 +17,7 @@
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 2 of the License, or
  any later version.
+ 
  Equalify is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -69,9 +70,9 @@ function equalify_wp_view(){
             $posts = get_posts(['meta_key' => 'equalify_wcag_errors', 'post_type' => ['post','page']]);
 
             if(!empty($posts)):
-                echo '<table><tr><th>Title</th><th>WCAG Errors</th>';
+                echo '<table><tr><th>Title</th><th>WCAG 2 AA Errors</th>';
                 foreach ($posts as $post):
-                    echo '<tr><td>'.$post->post_title.'</td><td>'.get_post_meta($post->ID, 'equalify_wcag_errors', true).'</td>';
+                    echo '<tr><td>'.$post->post_title.'</td><td><a href="https://inspector.littleforest.co.uk/InspectorWS/Accessibility?url='.$post->guid.'&level=WCAG2AA" target="_blank">'.get_post_meta($post->ID, 'equalify_wcag_errors', true).'</a></td>';
                 endforeach;
                 echo '</table>';
             else:
