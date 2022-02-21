@@ -60,19 +60,17 @@ function equalify_wp_view(){
         <div class="wrap">
 
             <h1>
-                <?php echo esc_html( get_admin_page_title() ); 
-?>
+                <?php echo esc_html( get_admin_page_title() ); ?>
             </h1>
             <hr />
 
             <?php 
             // Loop through posts
             $posts = get_posts(['meta_key' => 'equalify_wcag_errors', 'post_type' => ['post','page']]);
-
             if(!empty($posts)):
                 echo '<table><tr><th>Title</th><th>WCAG 2 AA Errors</th>';
                 foreach ($posts as $post):
-                    echo '<tr><td>'.$post->post_title.'</td><td><a href="https://inspector.littleforest.co.uk/InspectorWS/Inspector?url='.$post->guid.'&lang=auto" target="_blank">'.get_post_meta($post->ID, 'equalify_wcag_errors', true).'</a></td>';
+                    echo '<tr><td>'.$post->post_title.'</td><td><a href="https://inspector.littleforest.co.uk/InspectorWS/Inspector?url='.get_permalink($post->ID).'&lang=auto" target="_blank">'.get_post_meta($post->ID, 'equalify_wcag_errors', true).'</a></td>';
                 endforeach;
                 echo '</table>';
             else:
@@ -110,10 +108,9 @@ function equalify() {
     // Loop through posts
     $posts = get_posts(['post_type' => ['post','page']]);
     foreach ($posts as $post):
-        echo $post->guid;
 
         // Get Little Forrest Page Errors
-        $little_forrest_url = 'https://inspector.littleforest.co.uk/TestWS/Accessibility?url='.$post->guid.'&level=WCAG2AA';
+        $little_forrest_url = 'https://inspector.littleforest.co.uk/TestWS/Accessibility?url='.get_permalink($post->ID).'&level=WCAG2AA';
         $little_forrest_json = file_get_contents($little_forrest_url, false, stream_context_create($override_https));
         $little_forrest_json_decoded = json_decode($little_forrest_json, true);
         $little_forrest_errors = count($little_forrest_json_decoded['Errors']);
