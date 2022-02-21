@@ -72,7 +72,7 @@ function equalify_wp_view(){
             if(!empty($posts)):
                 echo '<table><tr><th>Title</th><th>WCAG 2 AA Errors</th>';
                 foreach ($posts as $post):
-                    echo '<tr><td>'.$post->post_title.'</td><td><a href="https://inspector.littleforest.co.uk/InspectorWS/Accessibility?url='.$post->guid.'&level=WCAG2AA" target="_blank">'.get_post_meta($post->ID, 'equalify_wcag_errors', true).'</a></td>';
+                    echo '<tr><td>'.$post->post_title.'</td><td><a href="https://inspector.littleforest.co.uk/InspectorWS/Inspector?url='.$post->guid.'&lang=auto" target="_blank">'.get_post_meta($post->ID, 'equalify_wcag_errors', true).'</a></td>';
                 endforeach;
                 echo '</table>';
             else:
@@ -120,7 +120,6 @@ function equalify() {
 
         //Update Post Meta
         update_post_meta( $post->ID, 'equalify_wcag_errors', $little_forrest_errors);
-        
     
     endforeach;
         
