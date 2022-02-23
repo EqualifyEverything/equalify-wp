@@ -62,13 +62,14 @@ function equalify_wp_view(){
             <h1>
                 <?php echo esc_html( get_admin_page_title() ); ?>
             </h1>
+            <p>Equalify lists WCAG 2 AA accessibility errors via <a href="http://littleforest.co.uk" target="_blank">Little Forrest</a>'s API.
             <hr />
 
             <?php 
             // Loop through posts
             $posts = get_posts(['meta_key' => 'equalify_wcag_errors', 'post_type' => ['post','page']]);
             if(!empty($posts)):
-                echo '<table><tr><th>Title</th><th>WCAG 2 AA Errors</th>';
+                echo '<table><tr><th scope="col">Page Title</th><th scope="col">WCAG 2 AA Errors</th>';
                 foreach ($posts as $post):
                     echo '<tr><td>'.$post->post_title.'</td><td><a href="https://inspector.littleforest.co.uk/InspectorWS/Inspector?url='.get_permalink($post->ID).'&lang=auto" target="_blank">'.get_post_meta($post->ID, 'equalify_wcag_errors', true).'</a></td>';
                 endforeach;
