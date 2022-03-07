@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Equalify
- * Description: Display WCAG 2 AA accessibility errors via Little Forrest's API.
+ * Description: Display WCAG 2 AA accessibility errors via Little Forrest's API and publish them to the cloud.
  * Author: Blake Bertuccelli
  * Author URI: https://github.com/bbertucc
  * Version: 0.0.1
@@ -27,12 +27,12 @@
  along with Equalify. If not, see https://www.gnu.org/licenses/gpl-2.0.html.
 
  DEV PHILOSOPHY==============================================================
- Create the thing. Deliver the thing. Develop the thing. 
+ Create the thing. Deliver the thing. Develop the thing. With minimal code.
 
 */
 
 /**
- * Setup WordPress View
+ * View
  */
 equalify_wp_view();
 function equalify_wp_view(){
@@ -57,19 +57,18 @@ function equalify_wp_view(){
     function equalify_admin_page_html() {
                 
         ?>        
-        <div class="wrap">
+        <div id="equalify" class="wrap">
 
             <h1>
                 <?php echo esc_html( get_admin_page_title() ); ?>
             </h1>
-            <p>Equalify lists WCAG 2 AA accessibility errors via <a href="http://littleforest.co.uk" target="_blank">Little Forrest</a>'s API.
             <hr />
 
             <?php 
             // Loop through posts
             $posts = get_posts(['meta_key' => 'equalify_wcag_errors', 'post_type' => ['post','page']]);
             if(!empty($posts)):
-                echo '<table><tr><th scope="col">Page Title</th><th scope="col">WCAG 2 AA Errors</th>';
+                echo '<table><tr><th scope="col">Title</th><th scope="col">WCAG 2 AA Errors</th>';
                 foreach ($posts as $post):
                     echo '<tr><td>'.$post->post_title.'</td><td><a href="https://inspector.littleforest.co.uk/InspectorWS/Inspector?url='.get_permalink($post->ID).'&lang=auto" target="_blank">'.get_post_meta($post->ID, 'equalify_wcag_errors', true).'</a></td>';
                 endforeach;
@@ -80,11 +79,56 @@ function equalify_wp_view(){
             ?>
 
             <hr />
-            <form method="post" action="<?php echo admin_url('admin-post.php'); ?>">
-                <input type="hidden" name="action" value="equalify">
-                <input type="hidden" name="data" value="<?php echo $_SERVER['REQUEST_URI'];?>">
-                <input class="button button-primary" type="submit" value="Equalify Site" />
+
+            <?php
+            // Send AJAX request using basic WP for reasons explained here: https://www.youtube.com/watch?v=OwBBxwmG49w
+            ?>
+
+            <form id="equalify-trigger">
+                <input type="hidden" name="action" value="equalify" />
+                <button id="trigger-button" type="submit" class="button button-primary">Equalify Site</button>
+                <svg id="trigger-loader" style="display:none; width:50px; height: 50px; display:none; margin-top: -10px" version="1.1" id="L9" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve">
+                    <path fill="#000" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50">
+                    <animateTransform 
+                        attributeName="transform" 
+                        attributeType="XML" 
+                        type="rotate"
+                        dur="1s" 
+                        from="0 50 50"
+                        to="360 50 50" 
+                        repeatCount="indefinite" />
+                    </path>
+                </svg>
             </form>
+            <script>
+                const equalifyTrigger = document.getElementById('equalify-trigger');
+
+                if (equalifyTrigger) {
+
+                    equalifyTrigger.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        document.querySelector('#trigger-button').disabled = 'disabled';
+                        document.querySelector('#trigger-loader').style.display = 'inline-block';
+                        fetch('<?php echo admin_url( 'admin-ajax.php' ); ?>', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            body: new URLSearchParams(new FormData(equalifyTrigger))
+
+                        }).then(response => {
+
+                            return response.json();
+
+                        }).then(jsonResponse => {
+                            document.querySelector('#trigger-loader').style.display = 'none';
+                            document.querySelector('#trigger-button').disabled = false;
+                        });
+
+                    });
+
+                }
+            </script>
         </div>
 
         <?php
@@ -93,16 +137,23 @@ function equalify_wp_view(){
 }
 
 /**
- * Setup Controller 
+ * Controller 
  */
-add_action( 'admin_post_equalify', 'equalify' );
+
+// Enqueue Scripts
+add_action('wp_enqueue_scripts', function(){
+    wp_enqueue_script( 'admin-ajax', get_stylesheet_directory_uri() . '/assets/admin-ajax.js', '', '', true );
+});
+
+// Do Equalify Things
+add_action( 'wp_ajax_equalify', 'equalify' );
 function equalify() {
 
     // Override file_get_contents() security - https://stackoverflow.com/questions/26148701/file-get-contents-ssl-operation-failed-with-code-1-failed-to-enable-crypto
     $override_https = array(
         "ssl"=>array(
-            "verify_peer"=>false,
-            "verify_peer_name"=>false,
+            "verify_peer"=> false,
+            "verify_peer_name"=> false,
         )
     );
     
@@ -121,8 +172,7 @@ function equalify() {
     
     endforeach;
         
-    // Redirect to Plugin Page
-    header('Location: '.$_REQUEST['data']); 
-    die();
+    // Debug Ajax
+    $api_response_body = wp_remote_retrieve_body($api_response);  
+    wp_send_json_success([$api_response_body, $_REQUEST]);
 }
-?>
