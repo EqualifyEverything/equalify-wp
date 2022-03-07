@@ -6,6 +6,6 @@
  2. Find "Equalify" under the "Tools" tab.
  3. Click the "Equalify" button.
 
-Tested with Single Install WordPress 5.8 and 5.9.
+Tested with Single Install WordPress 5.5 and 5.9.
 
  Please report any issues on [the issues tab](https://github.com/bbertucc/equalify/issues) of this repo!
