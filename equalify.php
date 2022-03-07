@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Equalify
- * Description: Display WCAG 2 AA accessibility errors via Little Forrest's API and publish them to the cloud.
+ * Description: Display WCAG 2 AA accessibility errors via Little Forrest's API.
  * Author: Blake Bertuccelli
  * Author URI: https://github.com/bbertucc
  * Version: 0.0.1
@@ -66,7 +66,7 @@ function equalify_wp_view(){
 
             <?php 
             // Loop through posts
-            $posts = get_posts(['meta_key' => 'equalify_wcag_errors', 'post_type' => ['post','page']]);
+            $posts = get_posts(['meta_key' => 'equalify_wcag_errors', 'numberposts' => -1, 'post_type' => ['post','page']]);
             if(!empty($posts)):
                 echo '<table><tr><th scope="col">Title</th><th scope="col">WCAG 2 AA Errors</th>';
                 foreach ($posts as $post):
@@ -123,6 +123,7 @@ function equalify_wp_view(){
                         }).then(jsonResponse => {
                             document.querySelector('#trigger-loader').style.display = 'none';
                             document.querySelector('#trigger-button').disabled = false;
+                            location.reload();
                         });
 
                     });
@@ -158,7 +159,7 @@ function equalify() {
     );
     
     // Loop through posts
-    $posts = get_posts(['post_type' => ['post','page']]);
+    $posts = get_posts(['post_type' => ['post','page'], 'numberposts' => -1 ]);
     foreach ($posts as $post):
 
         // Get Little Forrest Page Errors
