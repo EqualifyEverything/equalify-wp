@@ -8,39 +8,38 @@
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: equalify
+ * 
+ * @package Equalify
  */
 
  /*
-
  LICENSE===================================================================
  Equalify is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 2 of the License, or
- any later version.
- 
- Equalify is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with Equalify. If not, see https://www.gnu.org/licenses/gpl-2.0.html.
+ any later version. More info: https://www.gnu.org/licenses/gpl-2.0.html/
 
  DEV PHILOSOPHY==============================================================
  Create the thing. Deliver the thing. Develop the thing. With minimal code.
-
 */
 
 /**
  * View
+ * 
+ * @package Equalify
+ * @subpackage EqualifyWPView
  */
-equalify_wp_view();
-function equalify_wp_view(){
+function equalify_wp_view() {
 
-    // Create Tab
-    function add_equalify_admin_page(){
+    /**
+     * Create Tab
+     * 
+     * @package Equalify
+     * @subpackage EqualifyWPView
+     */
+    function add_equalify_admin_page() {
 
-        // add top level menu page
+        // Add top level menu page.
         add_submenu_page(
             'tools.php',
             'Equalify',
@@ -53,7 +52,12 @@ function equalify_wp_view(){
     }
     add_action( 'admin_menu', 'add_equalify_admin_page');
 
-    // Create View
+    /**
+     * Create Tab
+     * 
+     * @package Equalify
+     * @subpackage EqualifyWPView
+     */
     function equalify_admin_page_html() {
                 
         ?>        
@@ -65,7 +69,7 @@ function equalify_wp_view(){
             <hr />
 
             <?php 
-            // Loop through posts
+            // Loop through posts.
             $posts = get_posts(['meta_key' => 'equalify_wcag_errors', 'numberposts' => -1, 'post_type' => ['post','page']]);
             if(!empty($posts)):
                 echo '<table><tr><th scope="col">Title</th><th scope="col">WCAG 2 AA Errors</th>';
@@ -81,7 +85,7 @@ function equalify_wp_view(){
             <hr />
 
             <?php
-            // Send AJAX request using basic WP for reasons explained here: https://www.youtube.com/watch?v=OwBBxwmG49w
+            // Send AJAX request using basic WP for reasons explained here: https://www.youtube.com/watch?v=OwBBxwmG49w)
             ?>
 
             <form id="equalify-trigger">
@@ -136,21 +140,26 @@ function equalify_wp_view(){
     }
 
 }
+equalify_wp_view();
+
 
 /**
- * Controller 
+ * Enqueue Scripts
+ * 
+ * @package WordPress
  */
-
-// Enqueue Scripts
-add_action('wp_enqueue_scripts', function(){
+add_action('wp_enqueue_scripts', function() {
     wp_enqueue_script( 'admin-ajax', get_stylesheet_directory_uri() . '/assets/admin-ajax.js', '', '', true );
 });
 
-// Do Equalify Things
-add_action( 'wp_ajax_equalify', 'equalify' );
+/**
+ * Equalify
+ * 
+ * @package Equalify
+ */
 function equalify() {
 
-    // Override file_get_contents() security - https://stackoverflow.com/questions/26148701/file-get-contents-ssl-operation-failed-with-code-1-failed-to-enable-crypto
+    // Override file_get_contents() security - https://stackoverflow.com/questions/26148701/file-get-contents-ssl-operation-failed-with-code-1-failed-to-enable-crypto.
     $override_https = array(
         "ssl"=>array(
             "verify_peer"=> false,
@@ -158,22 +167,24 @@ function equalify() {
         )
     );
     
-    // Loop through posts
+    // Loop through posts.
     $posts = get_posts(['post_type' => ['post','page'], 'numberposts' => -1 ]);
     foreach ($posts as $post):
 
-        // Get Little Forrest Page Errors
+        // Get Little Forrest page errors.
         $little_forrest_url = 'https://inspector.littleforest.co.uk/TestWS/Accessibility?url='.get_permalink($post->ID).'&level=WCAG2AA';
         $little_forrest_json = file_get_contents($little_forrest_url, false, stream_context_create($override_https));
         $little_forrest_json_decoded = json_decode($little_forrest_json, true);
         $little_forrest_errors = count($little_forrest_json_decoded['Errors']);
 
-        //Update Post Meta
+        // Update post meta.
         update_post_meta( $post->ID, 'equalify_wcag_errors', $little_forrest_errors);
     
     endforeach;
         
-    // Debug Ajax
+    // Debug Ajax.
     $api_response_body = wp_remote_retrieve_body($api_response);  
     wp_send_json_success([$api_response_body, $_REQUEST]);
+
 }
+add_action( 'wp_ajax_equalify', 'equalify' );
