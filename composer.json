@@ -1,0 +1,13 @@
+{
+	"name": "bbertucc/equalify",
+	"description": "",
+	"homepage": "https://github.com/bbertucc/equalify",
+	"license": "AGPL-3.0-or-later",
+	"support": {
+		"issues": "https://github.com/bbertucc/equalifyy/issues"
+	},
+	"require": {},
+	"require-dev" : {
+		"wp-coding-standards/wpcs": ">=2.3.0"
+	}
+}
