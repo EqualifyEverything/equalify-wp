@@ -83,7 +83,7 @@ function equalify_admin_page_html() {
 			<hr />
 
 			<?php
-			// Send AJAX request using basic WP for reasons explained here: https://www.youtube.com/watch?v=OwBBxwmG49w)
+			// Send AJAX request using basic WP for reasons explained here: https://www.youtube.com/watch?v=OwBBxwmG49w .
 			?>
 
 			<form id="equalify-trigger">
