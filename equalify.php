@@ -8,6 +8,7 @@
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: equalify
+ * 
  * @package Equalify
  */
 
@@ -16,15 +17,7 @@
  Equalify is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 2 of the License, or
- any later version.
- 
- Equalify is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with Equalify. If not, see https://www.gnu.org/licenses/gpl-2.0.html.
+ any later version. More info: https://www.gnu.org/licenses/gpl-2.0.html/
 
  DEV PHILOSOPHY==============================================================
  Create the thing. Deliver the thing. Develop the thing. With minimal code.
@@ -32,6 +25,7 @@
 
 /**
  * View
+ * 
  * @package Equalify
  * @subpackage EqualifyWPView
  */
@@ -39,6 +33,7 @@ function equalify_wp_view() {
 
     /**
      * Create Tab
+     * 
      * @package Equalify
      * @subpackage EqualifyWPView
      */
@@ -59,6 +54,7 @@ function equalify_wp_view() {
 
     /**
      * Create Tab
+     * 
      * @package Equalify
      * @subpackage EqualifyWPView
      */
@@ -149,6 +145,7 @@ equalify_wp_view();
 
 /**
  * Enqueue Scripts
+ * 
  * @package WordPress
  */
 add_action('wp_enqueue_scripts', function() {
@@ -157,6 +154,7 @@ add_action('wp_enqueue_scripts', function() {
 
 /**
  * Equalify
+ * 
  * @package Equalify
  */
 function equalify() {
