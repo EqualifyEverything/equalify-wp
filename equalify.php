@@ -172,7 +172,7 @@ function equalify() {
     foreach ($posts as $post):
 
         // Get Little Forrest page errors.
-        $little_forrest_url = 'https://inspector.littleforest.co.uk/TestWS/Accessibility?url='.get_permalink($post->ID).'&level=WCAG2AA';
+        $little_forrest_url = 'https://inspector.littleforest.co.uk/InspectorWS/Accessibility?url='.get_permalink($post->ID).'&level=WCAG2AA';
         $little_forrest_json = file_get_contents($little_forrest_url, false, stream_context_create($override_https));
         $little_forrest_json_decoded = json_decode($little_forrest_json, true);
         $little_forrest_errors = count($little_forrest_json_decoded['Errors']);
